@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using SignalRProgressBarSimpleExample.Util;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SignalRProgressBarSimpleExample.Controllers
 {
@@ -27,6 +28,13 @@ namespace SignalRProgressBarSimpleExample.Controllers
 
         public JsonResult LongRunningProcess()
         {
+            Task.Run(() => { LongProcess(); });
+
+            return Json("Started", JsonRequestBehavior.AllowGet);
+        }
+
+        private void LongProcess()
+        {
             //THIS COULD BE SOME LIST OF DATA
             int itemsCount = 100;
 
@@ -36,10 +44,8 @@ namespace SignalRProgressBarSimpleExample.Controllers
                 Thread.Sleep(500);
 
                 //CALLING A FUNCTION THAT CALCULATES PERCENTAGE AND SENDS THE DATA TO THE CLIENT
-                Functions.SendProgress("Process in progress...", i , itemsCount);
+                Functions.SendProgress("Process in progress...", i, itemsCount);
             }
-
-            return Json("", JsonRequestBehavior.AllowGet);
         }
     }
 }
